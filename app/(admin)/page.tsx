@@ -152,7 +152,7 @@ export default async function OverviewPage() {
             <div className="flex items-center gap-3">
               <Pigeon size={56} bobbing={false} />
               <p className="font-semibold text-muted">
-                Nothing divisive yet. A caption needs at least 2 votes.
+                Nothing divisive yet. A caption needs both an upvote and a downvote.
               </p>
             </div>
           ) : (

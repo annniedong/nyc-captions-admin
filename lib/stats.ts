@@ -75,7 +75,10 @@ export async function getOverviewData(supabase: SupabaseClient) {
     hourly: unwrap<HourRow[]>("hourly", hourly),
     voices: unwrap<VoiceRow[]>("voices", voices),
     models: unwrap<ModelRow[]>("models", models),
-    divisive: unwrap<DivisiveRow[]>("divisive", divisive),
+    // Only captions with at least one upvote AND one downvote are truly divisive.
+    divisive: unwrap<DivisiveRow[]>("divisive", divisive).filter(
+      (row) => row.ups > 0 && row.downs > 0,
+    ),
     users: unwrap<AdminUser[]>("users", users),
     best: ((best.data ?? [])[0] ?? null) as {
       id: string;

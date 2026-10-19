@@ -91,7 +91,14 @@ create policy "Superadmins can delete captions"
   on public.captions for delete to authenticated
   using (public.is_superadmin());
 
--- Storage: remove the image file when a photo is deleted.
+-- Storage: remove the image file when a photo is deleted. Supabase Storage must be
+-- able to SEE an object before it will delete it, so admins get a read policy too.
+-- (Public URLs are unaffected; the bucket is public.)
+drop policy if exists "Superadmins can read photo objects" on storage.objects;
+create policy "Superadmins can read photo objects"
+  on storage.objects for select to authenticated
+  using (bucket_id = 'photos' and public.is_superadmin());
+
 drop policy if exists "Superadmins can delete photos" on storage.objects;
 create policy "Superadmins can delete photos"
   on storage.objects for delete to authenticated
@@ -316,7 +323,8 @@ begin
   from public.captions c
   join public.votes v on v.caption_id = c.id
   group by c.id
-  having count(*) >= 2
+  having count(*) filter (where v.value = 1) >= 1
+     and count(*) filter (where v.value = -1) >= 1
   order by (count(*) - abs(sum(v.value))) desc, count(*) desc
   limit greatest(p_limit, 1);
 end;

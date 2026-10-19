@@ -190,8 +190,14 @@ export async function deleteImage(
     return { error: "Couldn't delete that photo." };
   }
 
-  // Best effort: the row is already gone, so a leftover file is only clutter.
-  await supabase.storage.from("photos").remove([image.storage_path]);
+  // The row is already gone, so a leftover file is only clutter. But Storage
+  // reports "nothing removed" as success, so check and log it rather than assume.
+  const { data: removedFiles, error: removeError } = await supabase.storage
+    .from("photos")
+    .remove([image.storage_path]);
+  if (removeError || !removedFiles || removedFiles.length === 0) {
+    console.error("Photo file was not removed", image.storage_path, removeError);
+  }
 
   revalidatePath("/media");
   revalidatePath("/");
