@@ -1,0 +1,239 @@
+@import "tailwindcss";
+
+/* NYC subway palette: green, blue, yellow, gray (plus red/orange accents). */
+:root {
+  --background: #f3f6fa;
+  --surface: #ffffff;
+  --surface-2: #eaeff6;
+  --border: #dbe2ec;
+  --foreground: #172033;
+  --muted: #5d6b82;
+
+  --primary: #00933c;
+  --primary-dark: #006c2c;
+  --primary-foreground: #ffffff;
+  --blue: #0039a6;
+  --blue-dark: #002878;
+  --yellow: #fccc0a;
+  --yellow-dark: #d4a800;
+  --yellow-foreground: #172033;
+  --danger: #ee352e;
+  --danger-dark: #b3211b;
+  --orange: #ff6319;
+  --line-gray: #808183;
+
+  --tile: rgba(23, 32, 51, 0.06);
+  --night: #0b1522;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0b1018;
+    --surface: #131a26;
+    --surface-2: #1b2433;
+    --border: #2a3548;
+    --foreground: #edf2fa;
+    --muted: #9aa7bd;
+
+    --primary: #22b45d;
+    --primary-dark: #137a3c;
+    --blue: #5b8cff;
+    --blue-dark: #3563d6;
+    --yellow: #ffd633;
+    --yellow-dark: #d9b100;
+    --danger: #ff5d55;
+    --danger-dark: #c8362f;
+
+    --tile: rgba(237, 242, 250, 0.05);
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-blue: var(--blue);
+  --color-blue-dark: var(--blue-dark);
+  --color-yellow: var(--yellow);
+  --color-yellow-dark: var(--yellow-dark);
+  --color-yellow-foreground: var(--yellow-foreground);
+  --color-danger: var(--danger);
+  --color-danger-dark: var(--danger-dark);
+  --color-orange: var(--orange);
+  --color-line-gray: var(--line-gray);
+  --color-night: var(--night);
+
+  /* Aliases used across the app. */
+  --color-accent: var(--yellow);
+  --color-accent-foreground: var(--yellow-foreground);
+  --color-up: var(--primary);
+  --color-down: var(--danger);
+
+  --font-sans: var(--font-nunito);
+  --font-display: var(--font-nunito);
+}
+
+@theme {
+  --animate-rise: rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-pop: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-float-up: float-up 1.2s ease-out both;
+  --animate-bob: bob 2.8s ease-in-out infinite;
+  --animate-flap: flap 0.8s ease-in-out infinite;
+  --animate-blink: blink 4.5s infinite;
+  --animate-scan: scan 2.4s ease-in-out infinite;
+  --animate-confetti: confetti 1.9s cubic-bezier(0.2, 0.6, 0.3, 1) both;
+  --animate-wiggle: wiggle 0.6s ease-in-out both;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+  --animate-train: train-idle 0.5s ease-in-out infinite;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes pop {
+    0% {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes float-up {
+    0% {
+      opacity: 0;
+      transform: translateY(6px) scale(0.9);
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-30px) scale(1.05);
+    }
+  }
+  @keyframes bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+  @keyframes flap {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(-14deg);
+    }
+  }
+  @keyframes blink {
+    0%,
+    94%,
+    100% {
+      transform: scaleY(1);
+    }
+    97% {
+      transform: scaleY(0.1);
+    }
+  }
+  @keyframes scan {
+    0% {
+      transform: translateY(-10%);
+      opacity: 0;
+    }
+    15%,
+    85% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(110%);
+      opacity: 0;
+    }
+  }
+  @keyframes confetti {
+    0% {
+      opacity: 1;
+      transform: translate3d(0, -20px, 0) rotate(0deg);
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(var(--drift, 0px), 100vh, 0) rotate(var(--spin, 540deg));
+    }
+  }
+  @keyframes wiggle {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(-8deg);
+    }
+    75% {
+      transform: rotate(8deg);
+    }
+  }
+  @keyframes shimmer {
+    from {
+      background-position: -200% 0;
+    }
+    to {
+      background-position: 200% 0;
+    }
+  }
+  @keyframes train-idle {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-nunito), system-ui, sans-serif;
+}
+
+/* Subway-tile texture for hero and onboarding backdrops. */
+.bg-subway-tiles {
+  background-image:
+    linear-gradient(var(--tile) 2px, transparent 2px),
+    linear-gradient(90deg, var(--tile) 2px, transparent 2px);
+  background-size: 64px 32px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
