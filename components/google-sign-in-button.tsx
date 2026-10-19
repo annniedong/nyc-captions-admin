@@ -22,6 +22,8 @@ export function GoogleSignInButton({ next }: { next?: string }) {
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
+        // Admins often have several Google accounts; always let them choose.
+        queryParams: { prompt: "select_account" },
       },
     });
     if (error) setPending(false);
