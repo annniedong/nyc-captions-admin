@@ -21,10 +21,10 @@ export default async function AdminLayout({ children }: LayoutProps<"/">) {
       <aside className="hidden w-64 shrink-0 flex-col bg-night p-5 text-white md:flex">
         <div className="sticky top-5 flex h-[calc(100vh-2.5rem)] flex-col">
           <Logo inverted />
-          <div className="mt-8">
+          <div className="mt-6 min-h-0 flex-1 overflow-y-auto pb-4">
             <AdminNav layout="sidebar" />
           </div>
-          <div className="mt-auto flex items-center gap-3 rounded-2xl bg-white/10 p-3">
+          <div className="flex items-center gap-3 rounded-2xl bg-white/10 p-3">
             <Avatar url={profile?.avatar_url} name={name} size={36} />
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-extrabold">{name}</p>

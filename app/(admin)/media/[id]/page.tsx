@@ -8,7 +8,7 @@ import { MAIN_APP_URL } from "@/lib/config";
 import { photoUrl } from "@/lib/storage";
 import { timeAgo } from "@/lib/time";
 import { getVoice } from "@/lib/voices";
-import { addCaption, deleteCaption, deleteImage, updateCaption } from "../actions";
+import { addCaption, deleteCaption, deleteImage, replaceImage, updateCaption } from "../actions";
 
 export const metadata = { title: "Edit media" };
 
@@ -85,6 +85,30 @@ export default async function MediaDetailPage(props: PageProps<"/media/[id]">) {
               View in the public app
             </a>
           </div>
+
+          <ActionForm
+            action={replaceImage}
+            className="mt-4 rounded-3xl border-2 border-border bg-surface p-4"
+          >
+            <p className="text-sm font-extrabold">Replace the photo</p>
+            <p className="mt-1 text-sm font-semibold text-muted">
+              Swaps the image file and keeps the captions and votes. JPEG, PNG, or WebP, 2 MB max.
+            </p>
+            <input type="hidden" name="id" value={image.id} />
+            <input
+              type="file"
+              name="photo"
+              accept="image/jpeg,image/png,image/webp"
+              required
+              aria-label="New photo file"
+              className="mt-3 w-full text-sm font-semibold file:mr-3 file:rounded-xl file:border-0 file:bg-surface-2 file:px-3 file:py-2 file:text-sm file:font-extrabold"
+            />
+            <div className="mt-3">
+              <SubmitButton variant="secondary" pendingLabel="Uploading…">
+                Replace photo
+              </SubmitButton>
+            </div>
+          </ActionForm>
 
           <ActionForm
             action={deleteImage}

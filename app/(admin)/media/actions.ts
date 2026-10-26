@@ -91,6 +91,57 @@ export async function createMedia(
   return { id: image.id };
 }
 
+// UPDATE: swap the image file behind an existing photo. Captions and votes stay.
+export async function replaceImage(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const { supabase, user } = await requireAdmin();
+  const id = validId(formData.get("id"));
+  const photo = formData.get("photo");
+  if (!id) return { error: "Invalid photo." };
+  if (!(photo instanceof File) || photo.size === 0) return { error: "Choose a new photo first." };
+
+  const extension = EXTENSIONS[photo.type];
+  if (!extension) return { error: "Photos must be JPEG, PNG, or WebP." };
+  if (photo.size > MAX_BYTES) return { error: "That photo is too large (2 MB max)." };
+
+  const { data: image } = await supabase
+    .from("images")
+    .select("storage_path")
+    .eq("id", id)
+    .maybeSingle();
+  if (!image) return { error: "That photo no longer exists." };
+
+  const storagePath = `${user.id}/${crypto.randomUUID()}.${extension}`;
+  const { error: uploadError } = await supabase.storage
+    .from("photos")
+    .upload(storagePath, Buffer.from(await photo.arrayBuffer()), { contentType: photo.type });
+  if (uploadError) return { error: `Upload failed: ${uploadError.message}` };
+
+  const { data: updated, error } = await supabase
+    .from("images")
+    .update({ storage_path: storagePath })
+    .eq("id", id)
+    .select("id");
+  if (error || !updated || updated.length === 0) {
+    await supabase.storage.from("photos").remove([storagePath]);
+    return { error: "Couldn't save the new photo." };
+  }
+
+  // The row points at the new file now; the old one is only clutter.
+  const { data: removed, error: removeError } = await supabase.storage
+    .from("photos")
+    .remove([image.storage_path]);
+  if (removeError || !removed || removed.length === 0) {
+    console.error("Old photo file was not removed", image.storage_path, removeError);
+  }
+
+  revalidatePath(`/media/${id}`);
+  revalidatePath("/media");
+  return { ok: "Photo replaced" };
+}
+
 // CREATE: add a hand-written caption to an existing photo.
 export async function addCaption(
   _prev: ActionState,
